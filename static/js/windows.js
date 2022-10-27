@@ -1303,6 +1303,12 @@ switch(id) {
     case "code":
         windows('https://vscode.dev', '../resources/vsc.ico', 'Visual Studio Code', false, false, false, "code");
         break;
+    case "code":
+        windows('https://bruhprox.herokuapp.com', '../resources/bp.png', 'BruhProx', false, false, false, "BruhProx");
+        break;
+    case "discord":
+        windows('https://discord.com/app', '../resources/discord.png', 'Discord', false, false, false, "discord");
+        break;
     case "text":
         if(text) {
             windows('../textEditor/editor.html', '../resources/txt.svg', 'Terbium Text Editor', false, true, false, "text", text);
