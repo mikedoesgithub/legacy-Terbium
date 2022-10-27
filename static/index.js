@@ -4,7 +4,7 @@ function isUrl(val = '') {
 };
 
 function share() {
-    navigator.clipboard.writeText("https://terbium.ga");
+    navigator.clipboard.writeText(window.location.href);
 }
 
 function bd() {

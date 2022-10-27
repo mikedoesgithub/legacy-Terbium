@@ -428,7 +428,7 @@
 
 html {
     background: black;
-    scrollbar-color: var(--color) var(--body);
+    scrollbar-color: var(--body-color) var(--body);
     scrollbar-width: thin;
     cursor: var(--cursorNormal) !important;
 }
@@ -442,7 +442,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--color);
+    background-color: var(--body-color);
     border-radius: 6px;
 }
 
@@ -1082,6 +1082,11 @@ li {
     z-index: 99999999;
     transition: 100ms ease-in-out;
     box-shadow: 0 0 11px 2px rgba(0, 0, 0, 0.36);
+}
+
+.name.noHoverApps:hover {
+    background-color: var(--apps-background) !important;
+    cursor: var(--cursorNormal) !important;
 }
 
 .appOptions.h {
