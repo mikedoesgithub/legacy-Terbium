@@ -1,0 +1,7 @@
+{
+    "name": "Terbium App",
+    "description": "Node.js Terbium instance",
+    "repository": "https://github.com/z1g-project/Terbium/",
+    "logo": "https://github.com/z1g-project/Terbium/blob/main/static/resources/terbium.png?raw=true",
+    "keywords": ["tomp", "ultraviolet", "terbium"]
+}

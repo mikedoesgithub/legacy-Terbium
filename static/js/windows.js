@@ -1284,6 +1284,9 @@ switch(id) {
     case "settings":
         windows('../settings.html', '../resources/terbium.svg', 'Terbium Settings', false, true, false, "settings");
         break;
+    case "tiktok":
+        windows('../settings.html', '../resources/terbium.svg', 'Terbium Settings', false, true, false, "settings");
+        break;
     case "help":
         windows('../help.html', '../resources/terbium.svg', 'Terbium Help', false, true, false, "help");
         break;
@@ -1292,7 +1295,7 @@ switch(id) {
         break;
     case "changelog":
         if (date) {
-            windows(`../changes/${date}.html`, './resources/terbium.svg', 'Terbium Changelog', false, true, false, "changelog");
+            windows(`https://tiktok.com/`, './resources/tiktok.png', 'TikTok', false, true, false, "tiktok");
         } else {
             windows('../changes/index.html', './resources/terbium.svg', 'Terbium Changelog', false, true, false, "changelog");
         }
@@ -1303,11 +1306,11 @@ switch(id) {
     case "code":
         windows('https://vscode.dev', '../resources/vsc.ico', 'Visual Studio Code', false, false, false, "code");
         break;
-    case "code":
+    case "bruhprox":
         windows('https://bruhprox.herokuapp.com', '../resources/bp.png', 'BruhProx', false, false, false, "BruhProx");
         break;
     case "discord":
-        windows('https://discord.com/app', '../resources/discord.png', 'Discord', false, false, false, "discord");
+        windows('https://discord.com/app', '../resources/discord.png', 'Discord', false, false, false, "Discord");
         break;
     case "text":
         if(text) {
