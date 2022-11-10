@@ -52,9 +52,8 @@ window.addEventListener("mousedown", (e) => {
             ctxm.style.top = e.pageY + "px";
             ctxm.style.left = e.pageX + "px";
             menu.innerHTML = `
-                <a class="ctxbt" id="share" onclick="share(); document.getElementById("ctx").remove();">Share</a>
-                <a class="ctxbt" onclick="bd(); document.getElementById("ctx").remove();">Background</a>
-                <a class="ctxbt" onclick='windows("./settings.html", "../resources/terbium.svg", "Terbium Settings", false, true, false, "settings"); document.getElementById("ctx").remove();'>Settings</a>
+                <a class="ctxbt" id="share">Share</a>
+                <a class="ctxbt" id="backgroundB" onclick="bd(); document.getElementById("ctx").remove();">Background</a>
             `;
             window.addEventListener("mousedown", (e) => {
                 if (e.button == 0 && !e.target.closest(".ctx")) {
@@ -62,6 +61,14 @@ window.addEventListener("mousedown", (e) => {
                 }
             });
             document.body.appendChild(ctxm);
+            document.querySelector("#share").onclick = () => {
+                share();
+                document.getElementById("ctx").remove();
+            }
+            document.querySelector("#backgroundB").onclick = () => {
+                bd();
+                document.getElementById("ctx").remove();
+            }
         }
     }
 })
