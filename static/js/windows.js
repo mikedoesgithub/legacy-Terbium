@@ -1331,6 +1331,9 @@ switch(id) {
     case "image":
         windows("../image/image.html", "../resources/image.svg", "Image Viewer", false, true, false, "image");
         break;
+    case "Minecraft":
+        windows('https://eaglercraft-server.johnglynn2.repl.co', '../resources/mc.png', 'Minecraft', false, false, false, "Minecraft");
+        break;
     case "ruffle":
         windows("../ruffle/ruffle.html", "../resources/ruffle.svg", "Ruffle", false, true, false, "ruffle");
         break;

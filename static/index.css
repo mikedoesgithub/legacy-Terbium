@@ -306,7 +306,6 @@
 
 [data-theme="fracital"] {
     /* body */
-    --wallpaper: url("resources/wallpapers/fracitalWall.png");
     --body: #1C1C1C;
     --body-color: #FF75F9;
     --userselect-background: #ffffff0a;
