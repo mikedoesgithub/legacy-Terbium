@@ -47,6 +47,9 @@ let params;
 function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen = Boolean, appName, textAppText) {
     document.querySelector(".shell").appendChild(appShell);
     appShell.appendChild(appsShellName);
+    if(appsShellName.classList.contains("noHoverApps")) {
+        appsShellName.classList.remove("noHoverApps")
+    }
     appsShellName.innerText = title;
     const appID = document.querySelector(".name").getAttribute("data-id");
     let chromeJS = document.createElement("script");
@@ -70,18 +73,23 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
     newwin.setAttribute("data-browser", browser);
     newwin.setAttribute("data-fullscreen", fullscreen);
     newwin.setAttribute("data-appName", appName);
+    newwin.setAttribute("data-textAppText", textAppText);
     newwin.style.maxHeight = window.innerHeight - 37 + "px";
     newwin.style.maxWidth = window.innerWidth + "px";
     newwin.setAttribute("min-height", "499");
     newwin.setAttribute("min-width", "499");
-
+    
     window.onresize = (e) => {
-      newwin.style.maxHeight = window.innerHeight - 37 + "px";
-      newwin.style.maxWidth = window.innerWidth - 37 + "px";
+        newwin.style.maxHeight = window.innerHeight - 37 + "px";
+        newwin.style.maxWidth = window.innerWidth - 37 + "px";
     }
 
     appsShellName.onclick = (e) => {
-        appOptions.classList.toggle("h");
+        if(appsShellName.innerHTML == "") {
+            return
+        } else {
+            appOptions.classList.toggle("h");
+        }
         appOptions.querySelector(".closeApp").onclick = (e) => {
             appsShellName.innerHTML = "";
             appOptions.classList.toggle("h");
@@ -226,13 +234,48 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
         default:
             break;
     }
+
+    const appItem = document.querySelectorAll(".appItem");
+    let appCount = 1;
+    let win = document.querySelectorAll(".win");
+    for (let i = 0; i < win.length; i++) {
+        if (win[i].getAttribute("data-appName") === appName) {
+            appCount++;
+        }
+        console.log(appCount);
+    }
+    if(appCount > 1) {
+        let dockItem = document.querySelectorAll(".dockbtn");
+        for (let i = 0; i < dockItem.length; i++) {
+            if(dockItem[i].getAttribute("app") === appName) {
+                dockItem[i].classList.add("group");
+                dockItem[i].setAttribute("data-group", appCount);
+                dockItem[i].setAttribute("data-groupId", newwin.id);
+                break;
+            }
+            const appsGroupsContainer = document.createElement("div");
+            appsGroupsContainer.classList.add("appsGroupsContainer");
+            appsGroupsContainer.classList.add("hidden");
+            appsGroupsContainer.setAttribute("appGroup", "");
+            appsGroupsContainer.setAttribute("data-groupId", newwin.id);
+            appsGroupsContainer.setAttribute("data-group", appCount);
+            appsGroupsContainer.setAttribute("data-appName", appName);
+            document.body.appendChild(appsGroupsContainer);
+            // const newAppGroupItem = document.createElement("div");
+            // newAppGroupItem.classList.add("appGroupItem");
+
+            // appsGroupsContainer.innerHTML = `
+                
+            // `;
+        }
+    }
     let newdock = document.createElement("div");
     newdock.setAttribute("data-appId", newwin.id);
     newdock.classList.add("appItem");
     newdock.classList.add("active");
     newdock.setAttribute("title", title);
+    newdock.setAttribute("app", appName);
     newdock.classList.add("dockbtn");
-    const appItem = document.querySelectorAll(".appItem");
     newdock.classList.add("alert");
     setTimeout(() => {
         newdock.classList.remove("alert");
@@ -317,6 +360,23 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
             newdock.innerHTML = `
                 <svg class="dockicon" title="Terbium Settings" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path class="fill" fill-rule="evenodd" clip-rule="evenodd" d="M37.5 70.5C36.6716 70.5 36 69.8284 36 69V65.1042C32.7614 64.5276 29.7344 63.3396 27.0425 61.6639L22.6212 66.1768C22.0425 66.7696 21.0928 66.7811 20.5 66.2024L16.2064 62.0113C15.6136 61.4327 15.6021 60.483 16.1808 59.8902L20.3521 55.6325C17.889 52.4624 16.1575 48.6955 15.4112 44.5854H11C10.1716 44.5854 9.5 43.9138 9.5 43.0854V37.0854C9.5 36.2569 10.1716 35.5854 11 35.5854H15.3808C15.962 32.255 17.1894 29.1467 18.929 26.3944L15.195 22.6069C14.6038 22.0266 14.5951 21.0769 15.1754 20.4857L19.3788 16.2041C19.9591 15.613 20.9088 15.6042 21.5 16.1846L25.0086 19.7433C28.1712 17.3211 31.9175 15.6227 36 14.8958V11C36 10.1716 36.6716 9.5 37.5 9.5H43.5C44.3284 9.5 45 10.1716 45 11V14.8958C48.9649 15.6018 52.6128 17.224 55.7167 19.5358L59 16.1846C59.5787 15.5917 60.5283 15.5803 61.1212 16.1589L65.4148 20.35C66.0076 20.9287 66.0191 21.8784 65.4404 22.4712L61.8833 26.1019C63.7224 28.9257 65.0173 32.1365 65.6193 35.5854H70C70.8284 35.5854 71.5 36.2569 71.5 37.0854V43.0854C71.5 43.9138 70.8284 44.5854 70 44.5854H65.5889C64.8312 48.7583 63.0579 52.5774 60.5345 55.7773L64.5 59.7996C65.0912 60.38 65.0999 61.3297 64.5196 61.9208L60.3162 66.2024C59.7359 66.7936 58.7862 66.8023 58.195 66.222L53.7982 61.7622C51.1464 63.3861 48.1748 64.5389 45 65.1042V69C45 69.8284 44.3284 70.5 43.5 70.5H37.5ZM41 56C49.8366 56 57 48.8366 57 40C57 31.1634 49.8366 24 41 24C32.1634 24 25 31.1634 25 40C25 48.8366 32.1634 56 41 56Z"/>
+                </svg>
+                <span class="activeSpan"></span>
+            `;
+            break;
+        case "hypertabs":
+            faviconHTML = `
+                <svg class="favicon stroke" id="favicon" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9c-.745 1.46 -5.783 -.259 -11.255 -3.838c-5.47 -3.579 -9.304 -7.664 -8.56 -9.123c.464 -.91 2.926 -.444 5.803 .805" />
+                    <circle cx="12" cy="12" r="7" />
+                </svg>
+            `;
+            newdock.innerHTML = `
+                <svg class="dockIcon stroke" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9c-.745 1.46 -5.783 -.259 -11.255 -3.838c-5.47 -3.579 -9.304 -7.664 -8.56 -9.123c.464 -.91 2.926 -.444 5.803 .805" />
+                    <circle cx="12" cy="12" r="7" />
                 </svg>
                 <span class="activeSpan"></span>
             `;
@@ -536,6 +596,80 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
                     <span class="activeSpan"></span>
                 `;
                 break;
+            case "store":
+                faviconHTML = `
+                    <svg class="favicon" id="favicon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g filter="url(#filter0_i_1361_2)">
+                            <path class="fill" fill-rule="evenodd" clip-rule="evenodd" d="M14 21C11.7909 21 10 22.7909 10 25V66C10 68.2091 11.7909 70 14 70H66C68.2091 70 70 68.2091 70 66V25C70 22.7909 68.2091 21 66 21H14ZM39.4477 38.697C39.4477 39.2493 38.9999 39.697 38.4477 39.697H34.2212C33.6689 39.697 33.2212 40.1448 33.2212 40.697V56.76C33.2212 57.3123 32.7734 57.76 32.2212 57.76H28.2265C27.6742 57.76 27.2265 57.3123 27.2265 56.76V40.697C27.2265 40.1448 26.7788 39.697 26.2265 39.697H22C21.4477 39.697 21 39.2493 21 38.697V35C21 34.4477 21.4477 34 22 34H38.4477C38.9999 34 39.4477 34.4477 39.4477 35V38.697ZM51.1707 34.0335C55.6419 34.0335 58.9207 36.748 58.7883 41.2721C58.7609 42.1554 58.2843 43.6071 57.1731 44.5785C56.8666 44.8464 56.8717 45.3927 57.2056 45.6256C59.6519 47.3319 59.9524 49.9882 59.6824 51.6273C59.0863 55.4477 56.5361 57.76 51.3363 57.76H42.7647C42.2124 57.76 41.7647 57.3123 41.7647 56.76V35.0335C41.7647 34.4812 42.2124 34.0335 42.7647 34.0335H51.1707ZM47.7262 42.3163C47.7262 42.8686 48.174 43.3163 48.7262 43.3163H51.1707C54.0521 43.3163 54.1515 39.0938 51.1707 39.0938H48.7262C48.174 39.0938 47.7262 39.5415 47.7262 40.0938V42.3163ZM47.7262 51.4986C47.7262 52.0509 48.174 52.4986 48.7262 52.4986H51.1707C54.7476 52.4986 54.6814 47.6394 51.1707 47.6394H48.7262C48.174 47.6394 47.7262 48.0871 47.7262 48.6394V51.4986Z" />
+                        </g>
+                        <g filter="url(#filter1_i_1361_2)">
+                            <path class="fill2" d="M22 14C22 11.7909 23.7909 10 26 10H54.6154C56.4847 10 58 11.5153 58 13.3846V13.3846V21H52V17.3846C52 16.28 51.1046 15.3846 50 15.3846H30C28.8954 15.3846 28 16.28 28 17.3846V21H22V14Z" />
+                        </g>
+                        <defs>
+                            <filter id="filter0_i_1361_2" x="8" y="19" width="62" height="51" filterUnits="userSpaceOnUse"
+                                color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                                    result="hardAlpha" />
+                                <feOffset dx="-2" dy="-2" />
+                                <feGaussianBlur stdDeviation="2" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1361_2" />
+                            </filter>
+                            <filter id="filter1_i_1361_2" x="20" y="8" width="38" height="13" filterUnits="userSpaceOnUse"
+                                color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                                    result="hardAlpha" />
+                                <feOffset dx="-2" dy="-2" />
+                                <feGaussianBlur stdDeviation="1.5" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1361_2" />
+                            </filter>
+                        </defs>
+                    </svg>
+                `;
+                newdock.innerHTML = `
+                    <svg class="dockicon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g filter="url(#filter0_i_1361_2)">
+                            <path class="fill" fill-rule="evenodd" clip-rule="evenodd" d="M14 21C11.7909 21 10 22.7909 10 25V66C10 68.2091 11.7909 70 14 70H66C68.2091 70 70 68.2091 70 66V25C70 22.7909 68.2091 21 66 21H14ZM39.4477 38.697C39.4477 39.2493 38.9999 39.697 38.4477 39.697H34.2212C33.6689 39.697 33.2212 40.1448 33.2212 40.697V56.76C33.2212 57.3123 32.7734 57.76 32.2212 57.76H28.2265C27.6742 57.76 27.2265 57.3123 27.2265 56.76V40.697C27.2265 40.1448 26.7788 39.697 26.2265 39.697H22C21.4477 39.697 21 39.2493 21 38.697V35C21 34.4477 21.4477 34 22 34H38.4477C38.9999 34 39.4477 34.4477 39.4477 35V38.697ZM51.1707 34.0335C55.6419 34.0335 58.9207 36.748 58.7883 41.2721C58.7609 42.1554 58.2843 43.6071 57.1731 44.5785C56.8666 44.8464 56.8717 45.3927 57.2056 45.6256C59.6519 47.3319 59.9524 49.9882 59.6824 51.6273C59.0863 55.4477 56.5361 57.76 51.3363 57.76H42.7647C42.2124 57.76 41.7647 57.3123 41.7647 56.76V35.0335C41.7647 34.4812 42.2124 34.0335 42.7647 34.0335H51.1707ZM47.7262 42.3163C47.7262 42.8686 48.174 43.3163 48.7262 43.3163H51.1707C54.0521 43.3163 54.1515 39.0938 51.1707 39.0938H48.7262C48.174 39.0938 47.7262 39.5415 47.7262 40.0938V42.3163ZM47.7262 51.4986C47.7262 52.0509 48.174 52.4986 48.7262 52.4986H51.1707C54.7476 52.4986 54.6814 47.6394 51.1707 47.6394H48.7262C48.174 47.6394 47.7262 48.0871 47.7262 48.6394V51.4986Z" />
+                        </g>
+                        <g filter="url(#filter1_i_1361_2)">
+                            <path class="fill2" d="M22 14C22 11.7909 23.7909 10 26 10H54.6154C56.4847 10 58 11.5153 58 13.3846V13.3846V21H52V17.3846C52 16.28 51.1046 15.3846 50 15.3846H30C28.8954 15.3846 28 16.28 28 17.3846V21H22V14Z" />
+                        </g>
+                        <defs>
+                            <filter id="filter0_i_1361_2" x="8" y="19" width="62" height="51" filterUnits="userSpaceOnUse"
+                                color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                                    result="hardAlpha" />
+                                <feOffset dx="-2" dy="-2" />
+                                <feGaussianBlur stdDeviation="2" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1361_2" />
+                            </filter>
+                            <filter id="filter1_i_1361_2" x="20" y="8" width="38" height="13" filterUnits="userSpaceOnUse"
+                                color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                                    result="hardAlpha" />
+                                <feOffset dx="-2" dy="-2" />
+                                <feGaussianBlur stdDeviation="1.5" />
+                                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+                                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                                <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1361_2" />
+                            </filter>
+                        </defs>
+                    </svg>
+                    <span class="activeSpan"></span>
+                `;
         default:
             break;
     }
@@ -901,9 +1035,72 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
     let max;
     let dragger = newwin.querySelector("#drag");
     let a = 0;
+    
+    document.onkeydown = (e) => {
+        let focused = document.querySelector(".winFocus");
+        if(e.shiftKey && e.key === "ArrowLeft") {
+            lastWidth = focused.getClientRects()[0].width;
+            if(focused.classList.contains("maxiY")) {
+                focused.style.height = "calc(100% - 37px)";
+                focused.style.width = "calc(50%)";
+                focused.style.left = "0";
+                focused.style.top = "37px";
+                focused.classList.remove("maxiY");
+            } else {
+                focused.style.left = "0";
+                focused.style.top = "37px";
+                focused.style.width = "calc(50%)";
+                focused.style.height = "calc(100% - 37px)";
+                if(!focused.classList.contains("maxiN")) {
+                    focused.classList.add("maxiN");
+                }
+            }
+        } if(e.shiftKey && e.key === "ArrowRight") {
+            lastWidth = focused.getClientRects()[0].width;
+            if(focused.classList.contains("maxiY")) {
+                focused.style.height = "calc(100% - 37px)";
+                focused.style.width = "calc(50%)";
+                focused.style.right = "0";
+                focused.style.left = "0";
+                focused.style.top = "37px";
+                focused.classList.remove("maxiY");
+            } else {
+                focused.style.left = "";
+                focused.style.right = "0";
+                focused.style.top = "37px";
+                focused.style.width = "calc(50%)";
+                focused.style.height = "calc(100% - 37px)";
+                if(!focused.classList.contains("maxiN")) {
+                    focused.classList.add("maxiN");
+                }
+            }
+        } if(e.shiftKey && e.key === "ArrowUp") {
+            if(focused.classList.contains("maxiN")) {
+                focused.style.width = "calc(100%)";
+                focused.style.height = "calc(50%)";
+                focused.style.left = "0";
+                focused.style.top = "37px";
+                focused.classList.remove("maxiN");
+                focused.classList.add("maxiY");
+            } else {
+                focused.style.left = "0";
+                focused.style.top = "37px";
+                focused.style.width = "calc(100%)";
+                focused.style.height = "calc(50%)";
+                if(!focused.classList.contains("maxiY")) {
+                    focused.classList.add("maxiY");
+                } if(focused.classList.contains("maxiN")) {
+                    focused.classList.remove("maxiN");
+                }
+            }
+        } if(e.shiftKey && e.key === "ArrowDown") {
+            focused.querySelector(".mini").click();
+        }
+    }
     localStorage.setItem(appName, a++);
     newwin.querySelector('.mini').onclick = () => {
         newwin.classList.add("winmini");
+        document.querySelector(`[data-appid="${windowID}"]`).classList.remove("active");
         if(maxState === true) {
             newwin.classList.remove("maxiY");
         }
@@ -915,10 +1112,20 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
         if(!appOptions.classList.contains("h")) {
             appOptions.classList.toggle("h");
         }
-        newwin.remove();
         appsShellName.innerText = "";
         appsShellName.setAttribute("data-id", "");
         newdock.remove();
+        if(document.querySelectorAll(".win").length === 0) {
+            appsShellName.classList.add("noHoverApps");
+        }
+        // decrementing appCount
+        appCount--;
+        // getting the first app having the same data-appName to the app being closed and decrement its appCount
+        // let firstApp = document.querySelector(`[app="${newwin.getAttribute("data-appName")}"]`);
+        // console.log(firstApp);
+        // firstApp.setAttribute("data-group", appCount);
+        newwin.remove();
+        console.log(appCount);
     });
     newwin.querySelector('.maxi').onclick = () => {
         var winFocus = document.querySelectorAll(".winFocus");
@@ -1087,200 +1294,7 @@ function windows(link, icn, title, browser = Boolean, os = Boolean, fullscreen =
             element.classList.remove("bottom");
         }
     }
-    document.body.appendChild(newwin);
-    window.addEventListener("mousedown", (e) => {
-        const ctxm = document.createElement("div");
-        ctxm.classList.add("ctx");
-        ctxm.id = "ctx";
-        const menu = document.createElement("div");
-        menu.classList.add("menu");
-        ctxm.appendChild(menu);
-        if(e.button == 2) {
-            let winID;
-            if(!e.target.classList.contains(".winconts") && e.target != document.body) {
-                winID = e.target.parentElement.parentElement.id;
-            } else {
-                winID = e.target.parenElement.id;
-            }
-            if(e.target.closest(".winconts") && !e.target.closest(".controls") && !e.target.closest(".searchbar") && !e.target.closest(".m") && !e.target.closest(".icon")) {
-                if(document.getElementById("ctx")) {
-                    document.getElementById("ctx").remove();
-                }
-                ctxm.style.top = e.pageY + "px";
-                ctxm.style.left = e.pageX + "px";
-                menu.innerHTML = `
-                    <a class="ctxbt" id="ctxCloseWin">Close</a>
-                    <a class="ctxbt" id="ctxMaxWin">Maximize</a>
-                    <a class="ctxbt" id="ctxMinWin">Minimize</a>
-                    <a class="ctxbt" id="ctxReload">Reload</a>
-                    `;
-                window.addEventListener("mousedown", (e) => {
-                    if (e.button == 0 && !e.target.closest(".ctx")) {
-                        ctxm.remove();
-                    }
-                });
-                document.body.appendChild(ctxm);
-                const ctxCloseWin = ctxm.querySelector("#ctxCloseWin");
-                ctxCloseWin.addEventListener("click", () => {
-                    newwin.querySelector(".close").click();
-                    ctxm.remove();
-                });
-                const ctxMaxWin = document.querySelector("#ctxMaxWin");
-                ctxMaxWin.addEventListener("click", () => {
-                    newwin.querySelector(".maxi").click();
-                    ctxm.remove();
-                });
-                const ctxMinWin = document.querySelector("#ctxMinWin");
-                ctxMinWin.addEventListener("click", () => {
-                    newwin.querySelector(".mini").click();
-                    ctxm.remove();
-                });
-                const ctxReload = document.querySelector("#ctxReload");
-                ctxReload.addEventListener("click", () => {
-                    const frame = newwin.querySelector("iframe");
-                    frame.src = frame.src;
-                    ctxm.remove();
-                });
-            }
-            // if(e.target.closest(".appItem")) {
-            //     if(document.getElementById("ctx")) {
-            //         document.getElementById("ctx").remove();
-            //     }
-            //     if(localStorage.getItem("dockPos") === "Left") {
-            //         ctxm.style.left = "58px";
-            //         ctxm.style.top = e.pageY + "px";
-            //     } else if(localStorage.getItem("dockPos") === "Right") {
-            //         ctxm.style.right = "58px";
-            //         ctxm.style.top = e.pageY + "px";
-            //     } else if(localStorage.getItem("dockPos") === "Bottom") {
-            //         ctxm.style.left = e.pageX + "px";
-            //         ctxm.style.bottom = "58px";
-            //     }
-            //     menu.innerHTML = `
-            //         <a class="ctxbt" id="ctxCloseWin">Close</a>
-            //         <a class="ctxbt" id="ctxMaxWin">Maximize</a>
-            //         <a class="ctxbt" id="ctxMinWin">Minimize</a>
-            //     `;
-            //     document.body.appendChild(ctxm);
-            //     const ctxCloseWin = ctxm.querySelector("#ctxCloseWin");
-            //     ctxCloseWin.addEventListener("click", () => {
-            //         newwin.querySelector(".close").click();
-            //         ctxm.remove();
-            //     });
-            //     const ctxMaxWin = document.querySelector("#ctxMaxWin");
-            //     ctxMaxWin.addEventListener("click", () => {
-            //         newwin.querySelector(".maxi").click();
-            //         ctxm.remove();
-            //     });
-            //     const ctxMinWin = document.querySelector("#ctxMinWin");
-            //     ctxMinWin.addEventListener("click", () => {
-            //         newdock.click();
-            //         ctxm.remove();
-            //     });
-            //     window.addEventListener("mousedown", (e) => {
-            //         if (e.button == 0 && !e.target.closest(".ctx")) {
-            //             ctxm.remove();
-            //         }
-            //     });
-            // }
-        }
-    })
-}
-
-function hideStart() {
-    if (document.querySelector(".apps").classList.contains("op")) {
-        document.querySelector(".apps").classList.add("hidden");
-        document.querySelector("#appsL").classList.remove("appsIF");
-        document.querySelector(".apps").classList.remove("op");
-    }
-}
-
-var availableApps = ["browser", "code", "youtube", "apple music", "spotify", "tidal", "youtube music", "settings", "help", "color picker", "terminal", "video"];
-
-window.addEventListener("keydown", (e) => {
-    if(e.altKey && e.key === "w") {
-        const openApps = document.querySelector("#appsOpen");
-        openApps.click();
-    }
-    if(e.ctrlKey && e.altKey && e.key == "q") {
-        e.preventDefault();
-        document.querySelector(".winFocus").querySelector(".frame").contentWindow.location.reload();
-    }
-    if(e.key == "d" && e.ctrlKey) {
-        e.preventDefault();
-        document.querySelector(".apps").classList.toggle("hidden");
-        document.querySelector("#appsL").classList.toggle("appsIF");
-        document.querySelector(".apps").classList.toggle("op");
-    }
-    if(e.key == "b" && e.altKey && e.ctrlKey) {
-        e.preventDefault();
-        windows("../newwin.html", "../resources/terbium.svg", "Terbium Browser", true, true, false, 'browser');
-    }
-    if(e.key == "s" && e.ctrlKey && e.altKey) {
-        e.preventDefault();
-        windows("../settings.html", "../resources/terbium.svg", "Terbium Settings", false, true, false, "settings");
-    }
-    if(e.key == "h" && e.ctrlKey && e.altKey) {
-        e.preventDefault();
-        windows("../help.html", "../resources/terbium.svg", "Terbium Help", false, true, false, 'help')
-    }
-    if(e.key == "p" && e.ctrlKey && e.altKey) {
-        e.preventDefault();
-        windows("../color.html", "../resources/terbium.svg", "Terbium Picker", false, true, false, 'color')
-    }
-    if(e.key == "t" && e.ctrlKey && e.altKey) {
-        e.preventDefault();
-        windows("../terminal/terminal.html", "../resources/terbium.svg", "Terbium Terminal", false, true, false, 'terminal')
-    }
-    if(e.key == "x" && e.ctrlKey && e.altKey) {
-        e.preventDefault();
-        if(document.querySelector(".winFocus")) {
-            document.querySelector(".winFocus").querySelector(".close").click();
-        }
-    }
-    if(e.key == "n" && e.ctrlKey && e.altKey) {
-        e.preventDefault();
-        const win = document.querySelectorAll(".win");
-        for (let i = 0; i < win.length; i++) {
-            const element = win[i];
-            element.querySelector(".mini").click();
-        }
-    }
-    if(e.key == "c" && e.ctrlKey && e.altKey) {
-        const win = document.querySelectorAll(".win");
-        e.preventDefault();
-        for (let i = 0; i < win.length; i++) {
-            const element = win[i];
-            element.querySelector(".close").click();
-        }
-    }
-    if(e.altKey && e.shiftKey) {
-        lastWindow = document.querySelector(".winFocus").id;
-        var windowsAvailable = document.querySelectorAll(".win");
-        var windowsAvailableArray = Array.from(windowsAvailable);
-        var windowsAvailableArrayLength = windowsAvailableArray.length;
-        var currentWindow = document.querySelector(".winFocus");
-        var currentWindowIndex = windowsAvailableArray.indexOf(currentWindow);
-        var nextWindowIndex = currentWindowIndex + 1;
-        if(nextWindowIndex == windowsAvailableArrayLength) {
-            nextWindowIndex = 0;
-        }
-        var nextWindow = windowsAvailableArray[nextWindowIndex];
-        currentWindow.classList.remove("winFocus");
-        currentWindow.classList.add("winNotFocus");
-        nextWindow.classList.remove("winNotFocus");
-        nextWindow.classList.add("winFocus");
-        const appItem = document.querySelectorAll(".appItem");
-        for (let i = 0; i < appItem.length; i++) {
-            const element = appItem[i];
-            element.classList.remove("active");
-        }
-        document.querySelector("[data-appId='" + nextWindow.id + "']").classList.add("active");
-        appsShellName.innerHTML = document.querySelector(".winFocus").getAttribute("data-title");
-    }
-})
-
-const rightResize = document.createElement("div");
+    const rightResize = document.createElement("div");
     rightResize.classList.add("rightResize");
     const bottomResize = document.createElement("div");
     bottomResize.classList.add("bottomResize");
@@ -1514,6 +1528,236 @@ const rightResize = document.createElement("div");
             newwin.querySelector("iframe").style.pointerEvents = "auto";
         });
     })
+
+    document.body.appendChild(newwin);
+    window.addEventListener("mousedown", (e) => {
+        const ctxm = document.createElement("div");
+        ctxm.classList.add("ctx");
+        ctxm.id = "ctx";
+        const menu = document.createElement("div");
+        menu.classList.add("menu");
+        ctxm.appendChild(menu);
+        if(e.button == 2) {
+            let winID;
+            if(!e.target.classList.contains(".winconts") && e.target != document.body) {
+                winID = e.target.parentElement.parentElement.id;
+            } if(e.target.classList.contains("winconts")) {
+                winID = e.target.parentElement.id;
+            }
+            winEl = document.getElementById(winID);
+            if(e.target.closest(".winconts") && !e.target.closest(".controls") && !e.target.closest(".searchbar") && !e.target.closest(".m") && !e.target.closest(".icon")) {
+                if(document.getElementById("ctx")) {
+                    document.getElementById("ctx").remove();
+                }
+                ctxm.style.top = e.pageY + "px";
+                ctxm.style.left = e.pageX + "px";
+                menu.innerHTML = `
+                    <a class="ctxbt" id="ctxNewWindow">New Window</a>
+                    <a class="ctxbt" id="ctxCloseWin">Close</a>
+                    <a class="ctxbt" id="ctxMaxWin">Maximize</a>
+                    <a class="ctxbt" id="ctxMinWin">Minimize</a>
+                    <a class="ctxbt" id="ctxReload">Reload</a>
+                `;
+                window.addEventListener("mousedown", (e) => {
+                    if (e.button == 0 && !e.target.closest(".ctx")) {
+                        ctxm.remove();
+                    }
+                });
+                document.body.appendChild(ctxm);
+                const ctxCloseWin = ctxm.querySelector("#ctxCloseWin");
+                ctxCloseWin.addEventListener("click", () => {
+                    newwin.querySelector(".close").click();
+                    ctxm.remove();
+                });
+                const ctxMaxWin = document.querySelector("#ctxMaxWin");
+                ctxMaxWin.addEventListener("click", () => {
+                    newwin.querySelector(".maxi").click();
+                    ctxm.remove();
+                });
+                const ctxMinWin = document.querySelector("#ctxMinWin");
+                ctxMinWin.addEventListener("click", () => {
+                    newwin.querySelector(".mini").click();
+                    ctxm.remove();
+                });
+                const ctxReload = document.querySelector("#ctxReload");
+                ctxReload.addEventListener("click", () => {
+                    const frame = winEl.querySelector("iframe");
+                    frame.src = frame.src;
+                    ctxm.remove();
+                });
+                const ctxNewWindow = document.querySelector("#ctxNewWindow");
+                ctxNewWindow.addEventListener("click", () => {
+                    window.windows(link, icn, title, browser, os, fullscreen, appName, textAppText);
+                    ctxm.remove();
+                });
+            }
+            // if(e.target.closest(".appItem")) {
+            //     if(document.getElementById("ctx")) {
+            //         document.getElementById("ctx").remove();
+            //     }
+            //     if(localStorage.getItem("dockPos") === "Left") {
+            //         ctxm.style.left = "58px";
+            //         ctxm.style.top = e.pageY + "px";
+            //     } else if(localStorage.getItem("dockPos") === "Right") {
+            //         ctxm.style.right = "58px";
+            //         ctxm.style.top = e.pageY + "px";
+            //     } else if(localStorage.getItem("dockPos") === "Bottom") {
+            //         ctxm.style.left = e.pageX + "px";
+            //         ctxm.style.bottom = "58px";
+            //     }
+            //     menu.innerHTML = `
+            //         <a class="ctxbt" id="ctxCloseWin">Close</a>
+            //         <a class="ctxbt" id="ctxMaxWin">Maximize</a>
+            //         <a class="ctxbt" id="ctxMinWin">Minimize</a>
+            //     `;
+            //     document.body.appendChild(ctxm);
+            //     const ctxCloseWin = ctxm.querySelector("#ctxCloseWin");
+            //     ctxCloseWin.addEventListener("click", () => {
+            //         newwin.querySelector(".close").click();
+            //         ctxm.remove();
+            //     });
+            //     const ctxMaxWin = document.querySelector("#ctxMaxWin");
+            //     ctxMaxWin.addEventListener("click", () => {
+            //         newwin.querySelector(".maxi").click();
+            //         ctxm.remove();
+            //     });
+            //     const ctxMinWin = document.querySelector("#ctxMinWin");
+            //     ctxMinWin.addEventListener("click", () => {
+            //         newdock.click();
+            //         ctxm.remove();
+            //     });
+            //     window.addEventListener("mousedown", (e) => {
+            //         if (e.button == 0 && !e.target.closest(".ctx")) {
+            //             ctxm.remove();
+            //         }
+            //     });
+            // }
+        }
+    })
+}
+
+function hideStart() {
+    if (document.querySelector(".apps").classList.contains("op")) {
+        document.querySelector(".apps").classList.add("hidden");
+        document.querySelector("#appsL").classList.remove("appsIF");
+        document.querySelector(".apps").classList.remove("op");
+    }
+}
+
+var availableApps = ["browser", "hypertabs", "code", "youtube", "apple music", "spotify", "tidal", "youtube music", "settings", "help", "color picker", "terminal", "video"];
+
+window.addEventListener("keydown", (e) => {
+    let keyNameLower = e.key.toLowerCase();
+    if(e.altKey && keyNameLower === "w") {
+        if(document.querySelector("#main").classList.contains("closedA")) {
+            document.querySelector(".appsDesk").classList.toggle("openA");
+            main.classList.toggle("open");
+            main.classList.toggle("closedA");
+            document.querySelector(".showDesk").classList.add("noBorderRadius");
+            shell.classList.add("noShadow");
+            document.querySelector("#appSearch").value = "";
+            for(let i = 0; i < apps.length; i++) {
+                apps[i].classList.remove("appShow");
+                apps[i].classList.remove("appHide");
+            }
+            let pos = appsOpen.getBoundingClientRect();
+            let posTop = pos.top + 6;
+            let posLeft = pos.left + 6;
+            appsClose.style.top = posTop + "px";
+            appsClose.style.left = posLeft + "px";
+        } else if(!document.querySelector("#main").classList.contains("closedA")) {
+            document.querySelector(".appsDesk").classList.toggle("openA");
+            main.classList.toggle("open");
+            main.classList.toggle("closedA");
+            document.querySelector(".showDesk").classList.remove("noBorderRadius");
+            shell.classList.remove("noShadow");
+            document.querySelector("#appSearch").value = "";
+            for(let i = 0; i < apps.length; i++) {
+                apps[i].classList.remove("appShow")
+                apps[i].classList.remove("appHide")
+            }
+        }
+    }
+    if(e.ctrlKey && e.altKey && keyNameLower == "q") {
+        e.preventDefault();
+        document.querySelector(".winFocus").querySelector(".frame").contentWindow.location.reload();
+    }
+    if(e.ctrlKey && keyNameLower == "d") {
+        e.preventDefault();
+        document.querySelector(".apps").classList.toggle("hidden");
+        document.querySelector("#appsL").classList.toggle("appsIF");
+        document.querySelector(".apps").classList.toggle("op");
+    }
+    if(e.altKey && e.ctrlKey && keyNameLower == "b") {
+        e.preventDefault();
+        windows("../hypertabs/index.html","../resources/terbium.svg", "Terbium Browser", false, true, false, 'hypertabs');
+    }
+    if(keyNameLower == "s" && e.ctrlKey && e.altKey) {
+        e.preventDefault();
+        windows("../settings.html", "../resources/terbium.svg", "Terbium Settings", false, true, false, "settings");
+    }
+    if(keyNameLower == "h" && e.ctrlKey && e.altKey) {
+        e.preventDefault();
+        windows("../help.html", "../resources/terbium.svg", "Terbium Help", false, true, false, 'help')
+    }
+    if(keyNameLower == "p" && e.ctrlKey && e.altKey) {
+        e.preventDefault();
+        windows("../color.html", "../resources/terbium.svg", "Terbium Picker", false, true, false, 'color')
+    }
+    if(keyNameLower == "t" && e.ctrlKey && e.altKey) {
+        e.preventDefault();
+        windows("../terminal/terminal.html", "../resources/terbium.svg", "Terbium Terminal", false, true, false, 'terminal')
+    }
+    if(keyNameLower == "x" && e.ctrlKey && e.altKey) {
+        e.preventDefault();
+        if(document.querySelector(".winFocus")) {
+            document.querySelector(".winFocus").querySelector(".close").click();
+        }
+    }
+    if(keyNameLower == "n" && e.ctrlKey && e.altKey) {
+        e.preventDefault();
+        const win = document.querySelectorAll(".win");
+        for (let i = 0; i < win.length; i++) {
+            const element = win[i];
+            element.querySelector(".mini").click();
+        }
+    }
+    if(keyNameLower == "c" && e.ctrlKey && e.altKey) {
+        const win = document.querySelectorAll(".win");
+        e.preventDefault();
+        for (let i = 0; i < win.length; i++) {
+            const element = win[i];
+            element.querySelector(".close").click();
+        }
+    }
+    if(e.altKey && e.shiftKey) {
+        lastWindow = document.querySelector(".winFocus").id;
+        var windowsAvailable = document.querySelectorAll(".win");
+        var windowsAvailableArray = Array.from(windowsAvailable);
+        var windowsAvailableArrayLength = windowsAvailableArray.length;
+        var currentWindow = document.querySelector(".winFocus");
+        var currentWindowIndex = windowsAvailableArray.indexOf(currentWindow);
+        var nextWindowIndex = currentWindowIndex + 1;
+        if(nextWindowIndex == windowsAvailableArrayLength) {
+            nextWindowIndex = 0;
+        }
+        var nextWindow = windowsAvailableArray[nextWindowIndex];
+        currentWindow.classList.remove("winFocus");
+        currentWindow.classList.add("winNotFocus");
+        nextWindow.classList.remove("winNotFocus");
+        nextWindow.classList.add("winFocus");
+        if(nextWindow.classList.contains("winmini")) {
+            nextWindow.classList.remove("winmini");
+        }
+        const appItem = document.querySelectorAll(".appItem");
+        for (let i = 0; i < appItem.length; i++) {
+            const element = appItem[i];
+            element.classList.remove("active");
+        }
+        document.querySelector("[data-appId='" + nextWindow.id + "']").classList.add("active");
+        appsShellName.innerHTML = document.querySelector(".winFocus").getAttribute("data-title");
+    }
+})
 
 switch(id) {
     case "browser":
