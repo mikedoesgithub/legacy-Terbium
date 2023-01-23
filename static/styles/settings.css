@@ -71,7 +71,7 @@
     --cat-background: #0e0a40;
     --title-border-color: #ffe688;
     --white: #ffe688;
-    --button-background: #0e0a40;
+    --button-background: #3b3497;
     --button-boxShadow: none;
     --button-boxShadow-hover: 0 0 8px 4px #ffe688;
     --button-color: #ffe688;
@@ -83,7 +83,7 @@
     --switch-back: #332c84;
     --switch-back-shadow: #ffe6887d;
     --dropdown-boxShadow-hover: #ffe688;
-    --dropdown-button-background: #0e0a40;
+    --dropdown-button-background: #19126c;
     --dropdown-button-background-hover: #ffe688;
     --dropdown-button-color-hover: #0e0a40;
 }
@@ -117,6 +117,35 @@
     --dropdown-boxShadow-hover: #ff3ff5d4;
     --dropdown-button-background: #262626;
     --dropdown-button-background-hover: #ff3ff5d4;
+    --dropdown-button-color-hover: white;
+}
+
+[data-theme="almond"] {
+    --body: #1c1c1c;
+    --color: #E89D46;
+    --scrollbar-background: #383838;
+    --userselect-background: #ffffff1a;
+    --userselect-color: #FFC889;
+    --cursorText: url("../resources/cursors/textA.png") text;
+    --cursorNormal: url("../resources/cursors/normalA.png") default;
+    --cursorHand: url("../resources/cursors/handA.png") pointer;
+    --cat-background: #131313;
+    --title-border-color: #FFF;
+    --white: #E89D46;
+    --button-background: #313131;
+    --button-boxShadow: none;
+    --button-boxShadow-hover: 0 0 8px 4px #E89D46;
+    --button-color: #E89D46;
+    --button-color-hover: #ffffff;
+    --button-background-hover: #E89D46;
+    --button-border-hover: #252525;
+    --button-outline-hover: #E89D46;
+    --switch-thumb: #E89D46;
+    --switch-back: #424242d3;
+    --switch-back-shadow: #E89D46;
+    --dropdown-boxShadow-hover: #E89D46;
+    --dropdown-button-background: #262626;
+    --dropdown-button-background-hover: #E89D46;
     --dropdown-button-color-hover: white;
 }
 
@@ -164,20 +193,19 @@ body {
 
 .taskbar {
     display: flex;
-    width: 100%;
+    width: calc(100% - 10px);
     height: min-content;
     align-items: center;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding-left: 10px;
+    gap: 10px;
 }
 
 .title {
     color: var(--color);
-    border-left: 3px solid var(--color);
-    padding-left: 10px;
-    margin-left: 7px;
     font-family: Poppins;
-    font-size: 25px
+    font-size: 25px;
 }
 
 .settings {
@@ -219,7 +247,7 @@ body {
 .btns {
     display: flex;
     flex-wrap: wrap;
-    width: 17em;
+    width: max-content;
     height: max-content;
     margin-top: 9px;
     justify-content: center;
@@ -264,7 +292,7 @@ body {
 }
 
 .btn.night {
-    background-color: #0e0a40;
+    background-color: #3b3497;
     box-shadow: none;
     color: #ffe688;
     border-radius: 4px;
@@ -282,6 +310,25 @@ body {
     color: #0e0a40;
 }
 
+.btn.almond {
+    background-color: #313131;
+    box-shadow: none;
+    color: #E89D46;
+    border-radius: 4px;
+    height: max-content;
+    width: max-content;
+    font-family: Metro;
+    padding: 6px;
+    transition: ease 0.5s;
+    cursor: url("../resources/cursors/handA.png"), pointer !important;
+}
+
+.btn.almond:hover {
+    background-color: #CF8B3C;
+    box-shadow: 0 0 8px 4px #CF8B3C;
+    color: #fbfbfb;
+}
+
 .btn {
     background-color: var(--button-background);
     box-shadow: var(--button-boxShadow);
@@ -293,7 +340,6 @@ body {
     font-family: Metro;
     padding: 6px;
     transition: ease 0.5s;
-    margin-right: 6px;
     font-size: 16px;
 }
 
@@ -425,7 +471,7 @@ input[type=number] {
 }
 
 .dropbtn {
-    background-color: #ff3ff5;
+    background-color: var(--dropdown-button-background-hover);
     box-shadow: 0 0 8px 2px var(--dropdown-boxShadow-hover);
     color: var(--dropdown-button-color-hover);
     border: none;
@@ -494,4 +540,11 @@ input[type=number] {
     visibility: visible;
     opacity: 1;
     height: 81px;
+}
+
+[titleSpan] {
+    height: 30px;
+    background-color: var(--color);
+    width: 5px;
+    border-radius: 6px;
 }

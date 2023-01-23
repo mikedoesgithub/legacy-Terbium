@@ -25,6 +25,9 @@ if(theme == "dark") {
     colorOne = "#fff7a5";
     colorTwo = "#8a844b";
 }
+} else if(theme == "alm") {
+    colorOne = "#be6600";
+    colorTwo = "#7c4200";
 let mc = document.getElementById("mc");
 let vc = document.querySelector(".vc");
 let mcDataAutoPlay = !!vc.getAttribute("data-auto");
