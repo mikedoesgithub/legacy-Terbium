@@ -1946,7 +1946,7 @@ switch(id) {
         windows("../ruffle/ruffle.html", "../resources/ruffle.svg", "Ruffle", false, true, false, "ruffle");
         break;
     case "Terbium Games":
-        windows("../games/games.html", "../resources/games.ico", "Terbium Games", false, true, false, 'Terbium Games');
+        windows("../games/games.html", "../resources/games.jpeg", "Terbium Games", false, true, false, 'Terbium Games');
         break;
     default: 
         break;
