@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "bare-server-node": "github:tomphttp/bare-server-node",
+    "@tomphttp/bare-server-node": "^1.2.2",
     "draggabilly": "^3.0.0",
     "node-static": "^0.7.11",
     "npm": "^8.7.0",
@@ -11,10 +11,11 @@
   "name": "uv-app",
   "version": "1.0.0",
   "description": "Ultraviolet instance",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ."
+    "start": "node index.js"
   },
   "keywords": [
     "proxy"
