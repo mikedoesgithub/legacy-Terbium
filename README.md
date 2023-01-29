@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/z1g-project/terbium/main/static/resources/tb.png" height="200">
+<p align="center"><img src="https://raw.githubusercontent.com/z1g-project/terbium/main/static/resources/terbium.png" height="200">
 </p>
 
 # TerbiumOS web
