@@ -459,7 +459,7 @@ command.addEventListener("keydown", (e) => {
             const text1 = command.textContent.split(" ")[0];
             const text2 = command.textContent.split(" ")[1];
             if(text1 === "open") {
-                let apps = ["cmd", "terminal", "video", "canvas", "color", "help", "changelog", "settings", "yt", "code", "text", "browser", "image"];
+                let apps = ["cmd", "terminal", "video", "canvas", "color", "help", "changelog", "settings", "yt", "code", "text", "browser", "image", "taskmgr"];
                 for(let i = 0; i < apps.length; i++) {
                     if(apps[i].startsWith(text2)) {
                         command.innerHTML = `open ${apps[i]}`;
