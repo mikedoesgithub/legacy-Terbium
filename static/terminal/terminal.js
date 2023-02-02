@@ -294,6 +294,9 @@ command.addEventListener("keydown", (e) => {
                     case "image":
                         window.parent.windows("../image/image.html", "../resources/image.svg", "Terbium Image Viewer", false, true, false, "image");
                         break;
+                    case "games":
+                        window.parent.windows("../games/games.html", "../resources/games.png", "Terbium Games", false, true, false, "games");
+                        break;
                 }
             } else if(text.startsWith("http://") || text.startsWith("https://")) {
                 console.log(text);
