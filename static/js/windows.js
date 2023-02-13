@@ -1880,7 +1880,7 @@ window.addEventListener("keydown", (e) => {
 })
 
 switch(id) {
-    case "browser":
+    case "browser-old":
         windows("../newwin.html", "../resources/terbium.svg", "Terbium Browser", true, true, false, 'browser');
         break;
     case "color":
@@ -1947,6 +1947,12 @@ switch(id) {
         break;
     case "games":
         windows("../games/games.html", "../resources/games.png", "Terbium Games", false, true, false, 'Terbium Games');
+        break;
+    case "browser":
+        windows("https://velocity.johnglynn2.repl.co", "../resources/terbium.svg", "Terbium Browser", true, true, false, 'browser');
+        break;
+    case "z1g-project":
+        windows("https://z1g-project.johnglynn2.repl.co", "../resources/z1g.png", "z1g Project", true, true, false, 'browser');
         break;
     default: 
         break;
