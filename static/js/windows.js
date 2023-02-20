@@ -1954,6 +1954,9 @@ switch(id) {
     case "z1g-project":
         windows("https://z1g-project.johnglynn2.repl.co", "../resources/z1g.png", "z1g Project", true, true, false, 'browser');
         break;
+    case "viewer":
+        windows("/misc/misc.html", "../resources/z1g.png", "App Viewer", false, true, false, 'viewer');
+        break;
     default: 
         break;
 }
