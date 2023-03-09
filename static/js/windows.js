@@ -1909,16 +1909,16 @@ switch(id) {
         }
         break;
     case "yt":
-        windows('https://youtube.com', '../resources/yt.png', 'YouTube', false, false, false, "youtube");
+        windows('https://colorful-cypress-distance.glitch.me/uv/service/hvtrs8%2F-wuw%2Cymuvu%60e%2Ccmm-', '../resources/yt.png', 'YouTube', false, true, false, "youtube");
         break;
     case "code":
-        windows('https://vscode.dev', '../resources/vsc.ico', 'Visual Studio Code', false, false, false, "code");
+        windows('https://colorful-cypress-distance.glitch.me/uv/service/hvtrs8%2F-vqcmdg.fet%2F', '../resources/vsc.ico', 'Visual Studio Code', false, true, false, "code");
         break;
     case "bruhprox":
-        windows('https://bruhprox.herokuapp.com', '../resources/bp.png', 'BruhProx', false, false, false, "BruhProx");
+        windows('https://bruhprox.glitch.me', '../resources/bp.png', 'BruhProx', false, true, false, "BruhProx");
         break;
     case "discord":
-        windows('https://discord.com/app', '../resources/discord.png', 'Discord', false, false, false, "Discord");
+        windows('https://colorful-cypress-distance.glitch.me/uv/service/hvtrs8%2F-dksaopd%2Ccmm-arp', '../resources/discord.png', 'Discord', false, true, false, "Discord");
         break;
     case "text":
         if(text) {
@@ -1940,7 +1940,7 @@ switch(id) {
         windows("../image/image.html", "../resources/image.svg", "Image Viewer", false, true, false, "image");
         break;
     case "Minecraft":
-        windows('https://eaglercraft-server.johnglynn2.repl.co', '../resources/mc.png', 'Minecraft', false, false, false, "Minecraft");
+        windows('https://eaglercraft-server.johnglynn2.repl.co', '../resources/mc.png', 'Minecraft', false, true, false, "Minecraft");
         break;
     case "ruffle":
         windows("../ruffle/ruffle.html", "../resources/ruffle.svg", "Ruffle", false, true, false, "ruffle");
