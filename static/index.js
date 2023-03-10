@@ -1,3 +1,5 @@
+const version = document.querySelector(".version");
+
 function isUrl(val = '') {
     if (/^http(s?):\/\//.test(val) || val.includes('.') && val.substr(0, 1) !== ' ') return true;
     return false;
@@ -357,7 +359,7 @@ const appsOpen = document.getElementById("appsOpen");
 const appsClose = document.getElementById("appsClose");
 const main = document.querySelector("#main");
 const appsCloseTBP = document.querySelector("#appsClose");
-const shell = document.querySelector("#shell");
+const shell = document.querySelector(".shell");
 
 const apps = document.querySelectorAll(".deskapp");
 // add an event listener to all apps buttons
@@ -368,6 +370,7 @@ for(let i = 0; i < apps.length; i++) {
         document.querySelector(".appsDesk").classList.toggle("openA");
         document.querySelector(".showDesk").classList.remove("noBorderRadius");
         document.querySelector("#appSearch").value = "";
+        shell.classList.remove("noShadow");
         for(let i = 0; i < apps.length; i++) {
             apps[i].classList.remove("appShow")
             apps[i].classList.remove("appHide")
@@ -376,7 +379,7 @@ for(let i = 0; i < apps.length; i++) {
 }
 
 appsOpen.onclick = () => {
-    document.querySelector(".appsDesk").classList.toggle("openA");
+    let pos = appsOpen.getBoundingClientRect();
     main.classList.toggle("open");
     main.classList.toggle("closedA");
     document.querySelector(".showDesk").classList.add("noBorderRadius");
@@ -387,6 +390,14 @@ appsOpen.onclick = () => {
         apps[i].classList.remove("appHide")
     }
 }
+
+window.addEventListener("resize", () => {
+    let pos = appsOpen.getBoundingClientRect();
+    let posTop = pos.top + 6;
+    let posLeft = pos.left + 6;
+    appsClose.style.top = posTop + "px";
+    appsClose.style.left = posLeft + "px";
+})
 
 appsClose.onclick = () => {
     document.querySelector(".appsDesk").classList.toggle("openA");
@@ -515,3 +526,27 @@ document.querySelector(".logout").onclick = () => {
 if(localStorage.getItem("pass") === null || localStorage.getItem("pass") === "none") {
     document.querySelector(".logout").remove();
 }
+
+if(localStorage.getItem("theme") === null) {
+    localStorage.setItem("theme", "dark");
+}
+
+window.postMessage(JSON.stringify({
+    type: "getSystemInfo",
+}))
+
+window.addEventListener("message", (e) => {
+    var data;
+    try {
+        data = JSON.parse(e.data);
+    } catch (error) {
+        return;
+    }
+    if(data.type === "systemInfo") {
+        let fields = data.fields;
+        let versionNumber = fields.version;
+        let buildVersion = fields.build;
+
+        version.innerHTML = `Version ${versionNumber} (${buildVersion})`;
+    }
+})
